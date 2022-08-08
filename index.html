@@ -6,8 +6,10 @@ var startTime;
 var frameCount;
 var fractalUrl;
 var fpsResolution;
+var meuInterval;
 
 function startBenchmark() {
+	document.getElementById('end').textContent="";
 	downloadImage = new Image();
 	startTime = Date.now();
 	frameCount = 0;
@@ -15,6 +17,12 @@ function startBenchmark() {
 	fpsResolution = 1;
 	downloadImage.onload = function() { onFrameLoad(downloadImage, 1.0); }
 	downloadImage.src = fractalUrl;
+
+	document.getElementById('time').innerHTML="Tempo: <span id='counter'></span>";
+	
+	let element = document.querySelector('#counter');
+	let counter = 0;		
+	meuInterval = setInterval(() => element.innerHTML = counter++, 1000);
 }
 
 function onFrameLoad(downloadImage, zoomLevel) {
@@ -27,6 +35,9 @@ function onFrameLoad(downloadImage, zoomLevel) {
 		downloadImage = new Image();
 		downloadImage.onload = function() { onFrameLoad(downloadImage, zoomLevel*1.02); }
 		downloadImage.src = fractalUrl+"?zoom="+zoomLevel;
+	} else {
+		document.getElementById('end').textContent="Terminou!!";
+		clearInterval(meuInterval);
 	}
 }
 </script>
@@ -35,9 +46,12 @@ function onFrameLoad(downloadImage, zoomLevel) {
 <select id="benchmark">
   <option value="php/index.php">PHP</option>
   <option value="http://127.0.0.1:8000/julia2">Java</option>
+  <option value="http://127.0.0.1:3000/">JS</option>
 </select>
 <button onClick="startBenchmark()">Start</button>
-<span id='dashboard'></span>
+<span id='dashboard'></span> 
+<span id='time' style="margin-left: 10px;"></span>
+<span id='end' style="margin-left: 10px;"></span>
 <p>
 <img src='' width='900' height='900' id='fractalImage'>
 </p>
